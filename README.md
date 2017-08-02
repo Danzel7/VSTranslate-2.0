@@ -4,7 +4,7 @@
 
 Ensure you have node installed
 
-```bash 
+```bash
 npm install
 node app
 ```
@@ -22,7 +22,9 @@ Method: Get
 Request Params Required:
 * file
 * language
+* blanks
 
+Default behaviour should be to use blanks=true
 
 Response
 
@@ -60,6 +62,7 @@ Request Params Required:
 ```
 
 Response
+
 
 Success
 
