@@ -37,7 +37,7 @@ Vue.component("App1", {
             +'<input type="checkbox" value="">No Translation</label>'
             +'<label class="checkbox-inline">'
             +'<input type="checkbox" value="">Translation Done</label><br/>'
-            +'<table class="table table-bordered" style="margin-top: 10px;">'
+            +'<table id="myTable" class="table table-bordered" style="margin-top: 10px;">'
             +'<thead><tr>'
             +'<th>Label</th>'
             +'<th>Translation</th>'
@@ -45,40 +45,66 @@ Vue.component("App1", {
             +'<tbody>'
             /*+'<td>Hello</td>'
             +'<td>Bonjour</td>'*/
-            +'<tr v-for="post of posts">'
-            +'<td>common.yes</td>'
+            /*+'<tr v-for="post of posts">'
+            +'<td>{{post.en.name}}</td>'
             +'<td>{{post.value}}</td>'
-            +'</tr>'
+            +'</tr>'*/
             +'</tbody></table>'
-            +'<button type="button" class="btn btn-primary">Next</button>'
+            +'<v-paginator :resource_url="resource_url" @update="updateResource"></v-paginator>'
+            +'<button id="nextValue" type="button" class="btn btn-primary">Next</button>'
             +'</div>',
     props: ['posts'],
+
     created: function (){
       console.log('created1');
-      /*axios.get('/api/language?language=ga&blanks=true')
-      .then(response => {
-        // JSON responses are automatically parsed.
-        console.log('response.data ',response.data);
-        this.posts = response.data
-      })
-      .catch(e => {
-        this.errors.push(e);
-        console.log('error');
-      })*/
       this.$http.get('/api/language?language=ga&blanks=true').then(response => {
 
-    // get body data
-      //console.log('response.data ',response.data);
-      //this.someData = response.body;
-      this.posts = response.data;
-      console.log(this.posts);
+        this.posts = response.data;
+        let theData = response.data;
+        //console.log(this.posts[0].en);
+        //console.log(this.posts[0].en);
 
+        let table =  $('#myTable');
+        let max_size = theData.length;
+        let start = 0;
+        let limit = 10;
 
-  }, response => {
-    // error callback
-  });
+        console.log(theData)
+
+        pagnation(start, limit);
+
+        function pagnation(sta,limit) {
+          for(let i=start; i<limit; i++) {
+            let newRow = $('<tr><td>A-' + theData[i]['name'] + '</td><td>B-' + theData[i]['value']  + '</td></tr>');
+            table.append(newRow);
+          }
+        }
+
+        $('#nextValue').click(function(){
+          var next = limit;
+          if(max_size >= next) {
+            limit = limit + limit;
+            table.empty();
+            //console.log(next +' -next- '+limit);
+            pagnation(next,limit);
+          }
+        });
+
+        $('#PreeValue').click(function(){
+          var pre = limit-(2*limit);
+          if(pre>=0) {
+            limit = limit-limit;
+            //console.log(pre +' -pre- '+limit);
+            table.empty();
+            pagnation(pre, limit);
+          }
+        });
+
+      }, response => {
+          // error callback
+      //);
+    });
     }
-
 });
 
 
@@ -94,13 +120,25 @@ Vue.component("App1", {
 
 
 /* eslint-disable no-new */
+
+
+
 new Vue({
   el: '#mainApp',
   template: '<App1/>',
-  ddata: {
+  data: {
     posts: [{
       name: "common.no",
       value: "no"
-    }]
+    }],
+    resource_url: '/api/language?language=ga&blanks=true',
+  },
+  components: {
+    VPaginator: VuePaginator
+  },
+  methods: {
+    updateResource(data){
+      this.posts = data
+    }
   }
 });
