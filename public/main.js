@@ -46,14 +46,21 @@ Vue.component("App1", {
             /*+'<td>Hello</td>'
             +'<td>Bonjour</td>'*/
             /*+'<tr v-for="post of posts">'
-            +'<td>{{post.en.name}}</td>'
-            +'<td>{{post.value}}</td>'
+            /*+'<td>{{post.en.name}}</td>'
+            +'<td> <input class="theInp" type="text" v-on:keyup.enter="offFocus"'
+            +' :data-filename="{{post.en.file}}" language="ga" :data-property="{{post.en.name}}"/> </td>'
+            +'<td> <input class="theInp" type="text" '
+            +' v-bind:filename="string" language="ga" v-bind:property="test" /> </td>'*
             +'</tr>'*/
             +'</tbody></table>'
-            +'<v-paginator :resource_url="resource_url" @update="updateResource"></v-paginator>'
-            +'<button id="nextValue" type="button" class="btn btn-primary">Next</button>'
+            +'<button id="next" type="button" class="btn btn-primary">Next</button>'
             +'</div>',
     props: ['posts'],
+    methods: {
+      OffFocus(){
+        console.log('off focus1');
+      }
+    },
 
     created: function (){
       console.log('created1');
@@ -69,28 +76,88 @@ Vue.component("App1", {
         let start = 0;
         let limit = 10;
 
-        console.log(theData)
+        console.log('theData', theData);
 
         pagnation(start, limit);
 
         function pagnation(sta,limit) {
           for(let i=start; i<limit; i++) {
-            let newRow = $('<tr><td>A-' + theData[i]['name'] + '</td><td>B-' + theData[i]['value']  + '</td></tr>');
+            let newRow = $('<tr><td>'+theData[i].en.name+'</td><td>'
+            +'<div class="form-group">'
+            +'<input filename="'+theData[i].en.file+'"'+
+                          +'filename="'+theData[i].en.file+'" class="form-control theInp"'
+                          +'property="'+theData[i].en.name+'" lang="ga"/></div></td></tr>');
             table.append(newRow);
           }
         }
 
-        $('#nextValue').click(function(){
-          var next = limit;
+        $('#next').click(function(){
+          let next = limit;
           if(max_size >= next) {
             limit = limit + limit;
-            table.empty();
+            //table.empty();
+            $('#tableBody').html('');
             //console.log(next +' -next- '+limit);
             pagnation(next,limit);
           }
         });
 
-        $('#PreeValue').click(function(){
+        $('.theInp').blur(function(){
+          let textVal = $(this).val();
+          console.log('blur');
+
+          if(textVal !== ''){
+            let filename = $(this).attr('filename');
+            let property = $(this).attr('property');
+            let lang = $(this).attr('lang');
+
+            console.log('fileName '+filename);
+            console.log('property '+property);
+            console.log('language '+lang);
+
+            //var filename = "John";
+            //var property = "Smith";
+            //var lang
+
+            var trans = {
+              property: property,
+              filename: filename,
+              language: lang,
+              textvalue: textVal
+            }
+
+            let jsonData = JSON.stringify(trans);
+            //sitePersonel.employees.push(employee);
+            //console.log(sitePersonel);
+
+            console.log(JSON.stringify(trans));
+
+            $.ajax({
+              url: "/api/language",
+              type: "POST",
+              dataType: "json",
+              data: jsonData
+            });
+
+            /*let obj = {};
+            obj.language = lang;
+
+
+            obj.property = property;
+            obj*/
+
+            //let url = "/api/language?property="+property+"&filename="+filename
+                      //+"&language="+lang+"&textvalue="+textVal;
+
+            /*$.post( url, function( data ) {
+              console.log('data',data);
+            });*/
+
+          }
+
+        });
+
+        /*$('#PreeValue').click(function(){
           var pre = limit-(2*limit);
           if(pre>=0) {
             limit = limit-limit;
@@ -98,13 +165,18 @@ Vue.component("App1", {
             table.empty();
             pagnation(pre, limit);
           }
-        });
+        });*/
 
       }, response => {
           // error callback
       //);
-    });
-    }
+      });
+    }/*,
+    methods(){
+      offFocus(){
+        console.log('offFocus');
+      }
+    }*/
 });
 
 
@@ -130,15 +202,11 @@ new Vue({
     posts: [{
       name: "common.no",
       value: "no"
-    }],
-    resource_url: '/api/language?language=ga&blanks=true',
-  },
-  components: {
-    VPaginator: VuePaginator
-  },
+    }]
+  }/*,
   methods: {
-    updateResource(data){
-      this.posts = data
+    OffFocus(){
+      console.log('off focus');
     }
-  }
+  }*/
 });
