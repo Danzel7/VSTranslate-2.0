@@ -12,7 +12,6 @@ node app
 Navigate to http://localhost:3000
 
 
-
 ## API Calls
 
 ### api/language
@@ -75,4 +74,18 @@ Http Code: 200
 	'language': 'filename up to 250 chars',
 	'textvalue': 'massive text value'
 }
+```
+
+
+## To run acceptance tests
+
+```bash
+cd test/acceptance
+npm install
+```
+
+Now to execute tests run
+
+```
+nightwatch  --config nightwatch.config.js
 ```
