@@ -1,9 +1,18 @@
 var express = require('express')
+var fs = require("fs")
+var browserify = require('browserify')
+var vueify = require('vueify')
+
 var app = express()
   , server = require('http').createServer(app)
   , path = require('path'),
   bodyParser = require('body-parser');
 ;
+
+browserify('./public/main.js')
+  .transform(vueify)
+  .bundle()
+  .pipe(fs.createWriteStream("./public/bundle.js"))
 
 app.use(bodyParser.urlencoded({
      extended: true,

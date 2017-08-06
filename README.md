@@ -12,6 +12,16 @@ node app
 Navigate to http://localhost:3000
 
 
+## Instructions
+
+- Use the search box to filter by label
+- Edit a translation using the input and hit enter (saved should appear)
+- Used sample data (was having problems with the api end points)
+- Browserify library included to allow for require to be used in js and vue files
+
+
+
+
 ## API Calls
 
 ### api/language
