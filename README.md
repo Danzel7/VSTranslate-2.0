@@ -1,5 +1,12 @@
 # internationalize
 
+## Notes
+
+- Different version to previous translate
+- Used more of Vue's features
+- Improved the UI
+- Was having problems with the api endpoints so I just used sample data
+
 ## Setup
 
 Ensure you have node installed
@@ -14,9 +21,9 @@ Navigate to http://localhost:3000
 
 ## Instructions
 
+
 - Use the search box to filter by label
 - Edit a translation using the input and hit enter (saved should appear)
-- Used sample data (was having problems with the api end points)
 - Browserify library included to allow for require to be used in js and vue files
 
 
